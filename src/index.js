@@ -4,7 +4,12 @@ import { Command } from 'commander';
 import chalk from 'chalk';
 import boxen from 'boxen';
 import { readFileSync } from 'fs';
+import { SecurityManager } from './utils/security.js';
 import { BaselineAnalyzer } from './core/analyzer.js';
+
+// Initialize security
+SecurityManager.maskSensitiveFiles();
+SecurityManager.checkEnvironmentSecurity();
 
 const packageJson = JSON.parse(readFileSync('./package.json', 'utf8'));
 

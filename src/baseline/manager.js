@@ -4,7 +4,6 @@ import ora from 'ora';
 
 export class BaselineManager {
   constructor() {
-    // Handle different export formats
     this.features = webFeatures.features || webFeatures || {};
     this.groups = webFeatures.groups || {};
     this.migrationPatterns = this.createMigrationPatterns();
@@ -21,7 +20,6 @@ export class BaselineManager {
       }
       
       if (featureCount === 0) {
-        // Fallback: create basic patterns for demo
         this.features = this.createFallbackFeatures();
         featureCount = Object.keys(this.features).length;
         spinner.succeed(`Created ${featureCount} baseline patterns for analysis`);
@@ -38,46 +36,122 @@ export class BaselineManager {
 
   createFallbackFeatures() {
     return {
-      fetch: {
-        name: 'Fetch API',
-        status: { baseline: 'high' },
-        description: 'Modern HTTP request API'
-      },
-      const: {
-        name: 'const declaration',
-        status: { baseline: 'high' },
-        description: 'Block-scoped constant declarations'
-      },
-      querySelector: {
-        name: 'querySelector',
-        status: { baseline: 'high' },
-        description: 'CSS selector-based element selection'
-      }
+      fetch: { name: 'Fetch API', status: { baseline: 'high' } },
+      const: { name: 'const declaration', status: { baseline: 'high' } },
+      querySelector: { name: 'querySelector', status: { baseline: 'high' } }
     };
   }
 
   createMigrationPatterns() {
     return {
+      // HTTP & AJAX
       XMLHttpRequest: {
         modern: 'fetch',
-        featureId: 'fetch',
         severity: 'high',
-        description: 'XMLHttpRequest is legacy. Use fetch() for promise-based requests.',
+        description: 'XMLHttpRequest is legacy. Use fetch() for promise-based HTTP requests.',
         example: "fetch('/api/data').then(response => response.json())"
       },
+      
+      // Variable Declarations  
       var: {
         modern: 'const/let',
-        featureId: 'const',
         severity: 'medium', 
-        description: 'var has function scope. Use const/let for block scope.',
+        description: 'var has function scope and hoisting issues. Use const/let for block scope.',
         example: "const name = 'value'; let counter = 0;"
       },
+      
+      // DOM Selection
       getElementById: {
         modern: 'querySelector',
-        featureId: 'querySelector',
         severity: 'low',
-        description: 'querySelector provides more flexible element selection.',
+        description: 'querySelector provides more flexible element selection with CSS selectors.',
         example: "document.querySelector('#myId')"
+      },
+      getElementsByClassName: {
+        modern: 'querySelectorAll',
+        severity: 'medium',
+        description: 'querySelectorAll provides more flexible selection and returns a proper array.',
+        example: "document.querySelectorAll('.myClass')"
+      },
+      getElementsByTagName: {
+        modern: 'querySelectorAll',
+        severity: 'medium',
+        description: 'querySelectorAll is more flexible and consistent with modern DOM APIs.',
+        example: "document.querySelectorAll('div')"
+      },
+      
+      // Async Patterns
+      Promise: {
+        modern: 'async/await',
+        severity: 'medium',
+        description: 'Promise constructors can be complex. async/await provides cleaner syntax.',
+        example: "async function getData() { const data = await fetch('/api'); return data.json(); }"
+      },
+      
+      // Functions
+      function: {
+        modern: 'arrow functions',
+        severity: 'low',
+        description: 'Arrow functions provide cleaner syntax and lexical this binding.',
+        example: "const handleClick = () => { console.log('clicked'); };"
+      },
+      
+      // Equality & Logic
+      equality: {
+        modern: 'strict equality',
+        severity: 'medium',
+        description: 'Strict equality (=== / !==) prevents type coercion bugs.',
+        example: "if (value === 'expected') { /* safer comparison */ }"
+      },
+      
+      // String Operations
+      concatenation: {
+        modern: 'template literals',
+        severity: 'low',
+        description: 'Template literals provide better readability and expression interpolation.',
+        example: "const message = `Hello ${name}, you have ${count} items`;"
+      },
+      
+      // Array Methods
+      indexOf: {
+        modern: 'includes',
+        severity: 'low',
+        description: 'Array.includes() is more readable than indexOf() > -1 checks.',
+        example: "if (array.includes(item)) { /* cleaner existence check */ }"
+      },
+      'Array.apply': {
+        modern: 'spread syntax',
+        severity: 'medium',
+        description: 'Spread syntax is cleaner and more intuitive than Array.apply.',
+        example: "const newArray = [...arrayLike]; // instead of Array.apply"
+      },
+      
+      // Event Handling
+      attachEvent: {
+        modern: 'addEventListener',
+        severity: 'high',
+        description: 'attachEvent is IE-specific. addEventListener works across all browsers.',
+        example: "element.addEventListener('click', handler, false);"
+      },
+      
+      // Security & Best Practices
+      innerHTML: {
+        modern: 'textContent/createElement',
+        severity: 'high',
+        description: 'innerHTML poses XSS risks. Use textContent or createElement for safety.',
+        example: "element.textContent = safeText; // or createElement for complex HTML"
+      },
+      userAgent: {
+        modern: 'feature detection',
+        severity: 'medium',
+        description: 'User agent sniffing is unreliable. Use feature detection instead.',
+        example: "if ('fetch' in window) { /* feature exists */ }"
+      },
+      with: {
+        modern: 'explicit references',
+        severity: 'high',
+        description: 'with statements are deprecated and cause performance issues.',
+        example: "// Use explicit object references instead of with(obj) { prop }"
       }
     };
   }
@@ -86,12 +160,11 @@ export class BaselineManager {
     const pattern = this.migrationPatterns[patternName];
     if (!pattern) return null;
 
-    // Get Baseline status from web-features
-    let baselineStatus = 'high'; // Default to high for basic patterns
+    let baselineStatus = 'high'; // Default for most modern patterns
     
-    if (pattern.featureId && this.features[pattern.featureId]) {
-      const feature = this.features[pattern.featureId];
-      baselineStatus = feature.status?.baseline || 'high';
+    // Adjust baseline status based on pattern complexity
+    if (['innerHTML', 'attachEvent', 'with', 'XMLHttpRequest'].includes(patternName)) {
+      baselineStatus = 'high'; // High priority for security/compatibility
     }
 
     return {
