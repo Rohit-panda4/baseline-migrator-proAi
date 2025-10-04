@@ -2,7 +2,7 @@
 import { parse } from '@babel/parser';
 import traverseModule from '@babel/traverse';
 import { readFileSync } from 'fs';
-import chalk from 'chalk';
+import { Chalk } from 'chalk';
 import { BaselineManager } from '../baseline/manager.js';
 import { AIEngine } from '../ai/engine.js';
 
@@ -14,7 +14,7 @@ export class BaselineAnalyzer {
     this.logger = options.logger || console;
     // Disable chalk if a custom logger is provided (e.g., for web UI)
     const chalkLevel = (options.logger && options.logger !== console) ? 0 : undefined;
-    this.chalk = new chalk.Instance({ level: chalkLevel });
+    this.chalk = new Chalk({ level: chalkLevel });
 
     this.baselineManager = new BaselineManager();
     this.aiEngine = new AIEngine({ logger: this.logger, chalk: this.chalk });

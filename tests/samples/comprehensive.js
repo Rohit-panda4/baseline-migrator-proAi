@@ -54,3 +54,8 @@ if (document.attachEvent) {
 with (config) {
   console.log('API URL: ' + apiUrl);
 }
+
+// Legacy Array.apply for converting NodeList to Array
+var nodeList = document.getElementsByTagName('div');
+var nodeArray = Array.apply(null, nodeList);
+console.log('Converted NodeList to Array:', nodeArray);
