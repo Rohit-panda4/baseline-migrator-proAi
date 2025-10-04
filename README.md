@@ -12,7 +12,7 @@ Modernize your JavaScript codebase with confidence using official Chrome compati
 
 ## 🌟 Project Status
 
-**✅ Active & Maintained (June 2024)**
+**✅ Active & Maintained (October 2025)**
 
 The AI engine has been successfully migrated to the latest Google Gemini SDK (`@google/genai`) and now uses the `gemini-2.5-flash` model for faster and more accurate suggestions. All systems are fully operational.
 
