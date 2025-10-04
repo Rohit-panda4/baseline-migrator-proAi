@@ -1,234 +1,175 @@
-<<<<<<< HEAD
 # 🚀 Baseline Migrator Pro
-## AI-Powered Web Feature Migration Tool for Baseline Compatibility
 
 [![Google Gemini AI](https://img.shields.io/badge/AI-Google%20Gemini-blue)](https://ai.google.dev)
 [![Data Features](https://img.shields.io/badge/Data-279%20Web%20Features-green)](https://github.com/web-platform-dx/web-features)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-brightgreen)](https://nodejs.org)
 
-## ✨ Features
+**AI-Powered Web Feature Migration Tool for Baseline Compatibility**
 
-🔍 **27+ Legacy Pattern Detection** - Comprehensive AST analysis catches everything
-
-🤖 **Google Gemini AI Integration** - Intelligent, context-aware migration suggestions powered by Gemini 2.0
-
-📊 **279 Web Features** - Official web-features package integration for accurate Baseline data
-
-🎨 **Beautiful CLI Experience** - Professional output that developers love
-
-⚡ **Production Ready** - Smart rate limiting, error handling, and performance optimization
-
-🌐 **Web Interface** - Interactive web-based analysis tool
-
-## 🚀 Quick Start
-
-#### Clone and setup
-```bash
-git clone https://github.com/yourusername/baseline-migrator-pro
-cd baseline-migrator-pro
-npm install
-```
-
-#### Optional: Add your Gemini API key for AI features
-```bash
-echo "GEMINI_API_KEY=your-key-here" > .env
-```
-
-#### Analyze legacy code from the command line
-```bash
-npm run demo-ai
-```
-
-#### Or, run the web-based analysis tool
-```bash
-npm run start:web
-```
-Then open your browser to http://localhost:3000
-
-## 💡 What Makes This Special
-
-### Technical Excellence
-🎯 **AST-Based Analysis**: Uses Babel parser for comprehensive JavaScript code analysis
-
-📊 **Official Data Integration**: Leverages 279 web features from Chrome's official web-features package
-
-🤖 **AI-Powered Suggestions**: Google Gemini 2.0 provides context-aware migration recommendations
-
-🏗️ **Production Architecture**: Smart rate limiting, comprehensive error handling, and graceful degradation
-
-### Real-World Impact 🌍
-Detects critical patterns that matter:
-
-- **Security Issues**: innerHTML XSS vulnerabilities, unsafe DOM manipulation
-- **Performance Problems**: Legacy APIs, inefficient patterns, deprecated methods  
-- **Compatibility Gaps**: XMLHttpRequest → fetch, var → const/let migrations
-- **Modern Best Practices**: Strict equality, template literals, arrow functions
-
-## 📊 Demo Results
-
-Sample Analysis (27 patterns detected):
-⚠️ Found 27 legacy patterns:
-
-🔴 Line 15 - HIGH PRIORITY
-Legacy: innerHTML
-Modern: textContent/createElement
-Fix: Replace with textContent (widely supported in Baseline)
-🤖 Google Gemini AI Analysis: XSS security risk detected...
-
-🟡 Line 8 - MEDIUM PRIORITY
-Legacy: var
-Modern: const/let
-Fix: Replace with const/let (widely supported in Baseline)
-🤖 Google Gemini AI Analysis: Function scope issues can cause bugs...
-
-📊 Migration Summary:
-🔴 High priority: 3 (immediate attention needed)
-🟡 Medium priority: 18 (should be updated)
-🔵 Low priority: 6 (nice to have)
-
-
-#### 🛠️ Installation
-
-##### Prerequisites
-- Node.js 18+
-- npm or yarn
-
-##### Setup
-```bash
-# Global installation
-npm install -g baseline-migrator-pro
-
-# or local installation
-npm install baseline-migrator-pro
-```
-
-##### Optional: AI Features
-Get an API key from https://ai.google.dev
-```bash
-echo "GEMINI_API_KEY=your-actual-key" > .env
-```
-
-
-#### 🎯 Usage
-
-##### Basic Analysis
-Analyze a single file
-```bash
-baseline-migrate analyze src/legacy-code.js
-```
-
-With AI suggestions
-```bash
-baseline-migrate analyze src/legacy-code.js --ai
-```
-
-Multiple files
-```bash
-baseline-migrate analyze src/**/*.js
-```
-
-
-##### Available Commands
-```bash
-baseline-migrate --help # Show all options
-baseline-migrate analyze # Basic pattern detection
-baseline-migrate analyze --ai # AI-powered suggestions
-baseline-migrate demo # Run comprehensive demo
-```
-
-
-#### 🏗️ Architecture
-```
-src/
-├── index.js # Professional CLI with beautiful output
-├── core/analyzer.js # AST-based pattern detection engine
-├── baseline/manager.js # Web Features integration + migration patterns
-├── ai/engine.js # Google Gemini AI (2.0) with smart rate limiting
-├── utils/security.js # Environment protection and validation
-└── web/ # Contains the web server and interface
-    ├── server.js # Express.js server for the web UI
-    └── index.html # The HTML for the web interface
-```
-### 🎯 Detected Patterns
-
-| Pattern | Priority | Modern Alternative | Security Impact |
-|---|---|---|---|
-| XMLHttpRequest | 🔴 High | fetch API | Performance |
-| innerHTML | 🔴 High | textContent/createElement | XSS Vulnerability |
-| var declarations | 🟡 Medium | const/let | Scope Issues |
-| == operators | 🟡 Medium | === strict equality | Type Coercion |
-| getElementById | 🔵 Low | querySelector | Flexibility |
-
-*22 more patterns...*
-
-### 📈 Technical Specifications
-
-- **Language Analysis**: Babel AST parsing with comprehensive visitor pattern detection
-- **AI Integration**: Google Gemini 2.0 with context-aware prompt engineering
-- **Data Source**: Official Chrome web-features package (279 features)
-- **Rate Limiting**: Smart quota management for production environments
-- **Error Handling**: Graceful degradation with demo mode fallbacks
-- **Security**: Environment variable protection and API key validation
-
-### 🎪 Demo Commands
-```bash
-npm run demo # Basic analysis (fast)
-npm run demo-ai # AI-powered analysis (impressive)
-npm run demo-legacy # Legacy code patterns
-npm run demo-modern # Modern code validation
-npm run start:web # Start the web-based analysis tool
-
-# Development
-npm run dev # Development mode with nodemon
-npm run lint # Code quality checks
-npm run test # Test suite
-```
-### Google Gemini AI (optional)
-```
-GEMINI_API_KEY=your-key-here
-```
-
-### Output preferences
-```
-OUTPUT_FORMAT=table
-SHOW_PROGRESS=true
-MAX_AI_SUGGESTIONS=10
-```
-
-
-### 📋 Supported File Types
-
-✅ `.js` - JavaScript files
-✅ `.jsx` - React components  
-✅ `.ts` - TypeScript files
-✅ `.tsx` - TypeScript React components
-✅ Mixed projects with multiple file types
-
-### 🚀 Performance
-
-- **Fast Analysis**: Processes 1000+ line files in seconds
-- **Smart Caching**: Avoids redundant analysis
-- **Memory Efficient**: Streams large files without memory issues
-- **Parallel Processing**: Analyzes multiple files concurrently
-
-### 📖 Contributing
-
-We welcome contributions! See CONTRIBUTING.md for guidelines.
-
-### 📄 License
-
-MIT License - see LICENSE file for details.
-
-### 🙏 Acknowledgments
-
-- [web-features](https://github.com/web-platform-dx/web-features) - Official browser compatibility data
-- [Google Gemini AI](https://ai.google.dev) - Intelligent migration suggestions  
-- [Babel](https://babeljs.io) - JavaScript parsing and AST manipulation
+Modernize your JavaScript codebase with confidence using official Chrome compatibility data and AI-powered migration suggestions from Google Gemini.
 
 ---
 
-**Baseline Migrator Pro** - Modernize your JavaScript codebase with confidence using official Chrome compatibility data and AI-powered migration suggestions.
-=======
-# baseline-migrator-proAi
-AI-Powered Feature Migration Assistant for Baseline Tooling for Hackathon
->>>>>>> 5bbf45c6fcbe49edd8fe32add4da7455b6687064
+## ✨ Key Features
+
+-   **🤖 AI-Powered Migrations**: Leverages Google Gemini for intelligent, context-aware code migration suggestions.
+-   **🔍 Legacy Pattern Detection**: Uses AST-based analysis to detect over 27 legacy JavaScript patterns.
+-   **📊 Official Baseline Data**: Integrates with the official `web-features` package for accurate compatibility data across 279 web features.
+-   **💻 Interactive Web Interface**: A user-friendly web UI for analyzing code directly in your browser.
+-   **🎨 Professional CLI**: A powerful and beautiful command-line experience for developers.
+-   **⚡ Production Ready**: Built with smart rate limiting, error handling, and performance optimizations.
+
+---
+
+## 🛠️ Installation
+
+### Prerequisites
+
+-   Node.js (v18 or higher)
+-   `npm` or `yarn`
+
+### Setup
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/Rohit-panda4/baseline-migrator-proAi.git
+    cd baseline-migrator-proAi
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
+
+---
+
+## ⚙️ Configuration
+
+### Google Gemini AI (Optional)
+
+To enable AI-powered code suggestions, you need a Google Gemini API key.
+
+1.  Get your API key from [Google AI Studio](https://ai.google.dev).
+2.  Create a `.env` file in the root of the project:
+    ```bash
+    echo "GEMINI_API_KEY=your-key-here" > .env
+    ```
+    Replace `your-key-here` with your actual API key.
+
+### Output Preferences (Optional)
+
+You can also configure the output format and other settings in the `.env` file:
+
+```
+# The format for the CLI output (e.g., 'table', 'json')
+OUTPUT_FORMAT=table
+
+# Whether to show a progress bar during analysis
+SHOW_PROGRESS=true
+
+# The maximum number of AI suggestions to display
+MAX_AI_SUGGESTIONS=10
+```
+
+---
+
+## 🚀 Usage
+
+### 🌐 Web Interface
+
+The easiest way to get started is with the interactive web-based analysis tool.
+
+1.  **Start the web server:**
+    ```bash
+    npm run start:web
+    ```
+
+2.  **Open the web page:**
+    Open your browser and navigate to `http://localhost:3000`.
+
+From the web interface, you can paste your JavaScript code into the editor and click the "Analyze" button. The tool will display a detailed report of legacy patterns, compatibility issues, and AI-powered suggestions for modernization.
+
+### 💻 Command-Line Interface (CLI)
+
+For more advanced use cases and integration with build pipelines, you can use the CLI.
+
+#### Basic Analysis
+
+Analyze one or more files for legacy patterns:
+
+```bash
+# Analyze a single file
+npx baseline-migrate analyze src/legacy-code.js
+
+# Analyze multiple files using a glob pattern
+npx baseline-migrate analyze 'src/**/*.js'
+```
+
+#### AI-Powered Analysis
+
+To get intelligent migration suggestions from Google Gemini, use the `--ai` flag:
+
+```bash
+npx baseline-migrate analyze src/legacy-code.js --ai
+```
+
+#### Demo Commands
+
+Run various demonstrations to see the tool in action:
+
+```bash
+# Run a basic analysis demo (fast)
+npm run demo
+
+# Run an impressive AI-powered analysis demo
+npm run demo-ai
+```
+
+---
+
+## 💡 How It Works
+
+### Architecture
+
+The tool is built on a modern, robust architecture:
+
+```
+src/
+├── index.js          # Professional CLI with beautiful output
+├── core/analyzer.js    # AST-based pattern detection engine
+├── baseline/manager.js # Web Features integration + migration patterns
+├── ai/engine.js        # Google Gemini AI with smart rate limiting
+└── web/                # Web server and interface
+    ├── server.js       # Express.js server for the web UI
+    └── index.html      # The HTML for the web interface
+```
+
+### Detected Patterns
+
+The analysis engine can detect a wide range of legacy patterns, including:
+
+| Pattern          | Priority | Modern Alternative      | Impact              |
+| ---------------- | :------: | ----------------------- | ------------------- |
+| `innerHTML`      | 🔴 High  | `textContent`/`createElement` | XSS Vulnerability   |
+| `XMLHttpRequest` | 🔴 High  | `fetch` API               | Performance         |
+| `var` declarations | 🟡 Medium | `const`/`let`           | Scope Issues        |
+| `==` operators   | 🟡 Medium | `===` strict equality   | Type Coercion Bugs  |
+| `getElementById` | 🔵 Low   | `querySelector`         | Less Flexible       |
+
+*...and 22 more patterns.*
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Please see `CONTRIBUTING.md` for guidelines on how to get started.
+
+## 📄 License
+
+This project is licensed under the MIT License. See the `LICENSE` file for details.
+
+## 🙏 Acknowledgments
+
+-   [web-features](https://github.com/web-platform-dx/web-features) for the official browser compatibility data.
+-   [Google Gemini](https://ai.google.dev) for powering the intelligent migration suggestions.
+-   [Babel](https://babeljs.io) for the powerful JavaScript parsing and AST manipulation.
