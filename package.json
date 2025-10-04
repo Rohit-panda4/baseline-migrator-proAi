@@ -18,7 +18,8 @@
     "security-check": "node -e \"console.log('🔒 Security check passed - .env protected'); process.exit(0)\"",
     "secure-permissions": "chmod 600 .env && echo '✅ .env file secured'",
     "lint": "eslint src/",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "start:web": "node src/web/server.js"
   },
   "keywords": [
     "baseline",
@@ -42,6 +43,8 @@
     "chalk": "^5.3.0",
     "commander": "^12.0.0",
     "dotenv": "^16.4.5",
+    "express": "^5.1.0",
+    "glob": "^10.3.10",
     "ora": "^8.0.1",
     "table": "^6.8.2",
     "web-features": "^0.8.6"

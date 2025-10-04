@@ -1,12 +1,14 @@
+
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import dotenv from 'dotenv';
 import chalk from 'chalk';
-import ora from 'ora';
 
 dotenv.config();
 
 export class AIEngine {
-  constructor() {
+  constructor(options = {}) {
+    this.logger = options.logger || console;
+    this.chalk = options.chalk || new chalk.Instance();
     this.genAI = null;
     this.model = null;
     this.initialized = false;
@@ -16,21 +18,21 @@ export class AIEngine {
 
   async initialize() {
     if (!process.env.GEMINI_API_KEY) {
-      console.log(chalk.yellow('⚠️  No Gemini API key found. AI suggestions disabled.'));
-      console.log(chalk.gray('   Add GEMINI_API_KEY to .env file for Google AI features.'));
+      this.logger.log(this.chalk.yellow('⚠️  No Gemini API key found. AI suggestions disabled.'));
+      this.logger.log(this.chalk.gray('   Add GEMINI_API_KEY to .env file for Google AI features.'));
       return false;
     }
     
     try {
       this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-      this.model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      this.model = this.genAI.getGenerativeModel({ model: 'gemini-2.0' });
       this.initialized = true;
       
-      console.log(chalk.green('🤖 Google Gemini AI initialized successfully!'));
-      console.log(chalk.gray('   Using Gemini 1.5 Flash for intelligent migration suggestions'));
+      this.logger.log(this.chalk.green('🤖 Google Gemini AI initialized successfully!'));
+      this.logger.log(this.chalk.gray('   Using Gemini 2.0 for intelligent migration suggestions'));
       return true;
     } catch (error) {
-      console.log(chalk.red('❌ Failed to initialize Gemini AI:', error.message));
+      this.logger.log(this.chalk.red('❌ Failed to initialize Gemini AI:', error.message));
       return false;
     }
   }
@@ -54,10 +56,9 @@ export class AIEngine {
       return this.generateDemoSuggestion(issue);
     }
 
-    // Apply rate limiting
     await this.rateLimitDelay();
 
-    const spinner = ora(`Getting Gemini AI suggestion for ${issue.pattern}...`).start();
+    this.logger.log(`Getting Gemini AI suggestion for ${issue.pattern}...`);
     
     try {
       const prompt = `You are a Google Chrome team expert on web standards and Baseline compatibility.
@@ -90,16 +91,16 @@ Keep response focused and under 150 words.`;
       const response = await result.response;
       const suggestion = response.text();
       
-      spinner.succeed(`Gemini AI suggestion generated (${this.requestCount} requests)`);
+      this.logger.log(`Gemini AI suggestion generated (${this.requestCount} requests)`);
       
       return {
         suggestion: suggestion,
         confidence: 0.9,
-        model: 'gemini-1.5-flash'
+        model: 'gemini-2.0'
       };
 
     } catch (error) {
-      spinner.fail(`Gemini AI failed, using demo mode: ${error.message}`);
+      this.logger.log(`Gemini AI failed, using demo mode: ${error.message}`);
       return this.generateDemoSuggestion(issue);
     }
   }
@@ -278,13 +279,13 @@ Check MDN documentation for current best practices.`,
       }));
     }
 
-    console.log(chalk.blue('🤖 Generating Google Gemini AI suggestions...'));
-    console.log(chalk.gray(`   Processing ${issues.length} patterns with rate limiting...`));
+    this.logger.log(this.chalk.blue('🤖 Generating Google Gemini AI suggestions...'));
+    this.logger.log(this.chalk.gray(`   Processing ${issues.length} patterns with rate limiting...`));
     
     const enhancedIssues = [];
     
     for (const [index, issue] of issues.entries()) {
-      console.log(chalk.dim(`   Processing ${index + 1}/${issues.length}: ${issue.pattern}`));
+      this.logger.log(this.chalk.dim(`   Processing ${index + 1}/${issues.length}: ${issue.pattern}`));
       
       const aiResponse = await this.generateSuggestion(issue, codeContext);
       enhancedIssues.push({
@@ -305,24 +306,24 @@ Check MDN documentation for current best practices.`,
 
   formatAISuggestion(suggestion, confidence) {
     const sections = suggestion.split('\n\n');
-    let formatted = chalk.bold.magenta('🤖 Google Gemini AI Analysis:\n\n');
+    let formatted = this.chalk.bold.magenta('🤖 Google Gemini AI Analysis:\n\n');
     
     sections.forEach(section => {
       if (section.trim()) {
         // Handle emoji headers and bold formatting
         if (section.includes('**') || section.includes('🔍') || section.includes('✅') || section.includes('🔄') || section.includes('🚀') || section.includes('⚠️')) {
           const formatted_section = section
-            .replace(/\*\*(.*?)\*\*/g, (match, text) => chalk.bold.cyan(text))
-            .replace(/`(.*?)`/g, (match, code) => chalk.green(code));
+            .replace(/\*\*(.*?)\*\*/g, (match, text) => this.chalk.bold.cyan(text))
+            .replace(/`(.*?)`/g, (match, code) => this.chalk.green(code));
           formatted += formatted_section + '\n\n';
         } else {
-          formatted += chalk.white(section) + '\n\n';
+          formatted += this.chalk.white(section) + '\n\n';
         }
       }
     });
     
     if (confidence > 0) {
-      formatted += chalk.dim(`\n✨ Google Gemini Confidence: ${Math.round(confidence * 100)}% | Model: gemini-1.5-flash`);
+      formatted += this.chalk.dim(`\n✨ Google Gemini Confidence: ${Math.round(confidence * 100)}% | Model: gemini-2.0`);
     }
     
     return formatted;
@@ -332,7 +333,7 @@ Check MDN documentation for current best practices.`,
     return {
       requestCount: this.requestCount,
       initialized: this.initialized,
-      model: 'gemini-1.5-flash'
+      model: 'gemini-2.0'
     };
   }
 }

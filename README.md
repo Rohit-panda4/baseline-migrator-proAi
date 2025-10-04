@@ -9,7 +9,7 @@
 
 🔍 **27+ Legacy Pattern Detection** - Comprehensive AST analysis catches everything
 
-🤖 **Google Gemini AI Integration** - Intelligent, context-aware migration suggestions
+🤖 **Google Gemini AI Integration** - Intelligent, context-aware migration suggestions powered by Gemini 2.0
 
 📊 **279 Web Features** - Official web-features package integration for accurate Baseline data
 
@@ -17,19 +17,33 @@
 
 ⚡ **Production Ready** - Smart rate limiting, error handling, and performance optimization
 
+🌐 **Web Interface** - Interactive web-based analysis tool
+
 ## 🚀 Quick Start
 
 #### Clone and setup
+```bash
 git clone https://github.com/yourusername/baseline-migrator-pro
 cd baseline-migrator-pro
 npm install
+```
 
 #### Optional: Add your Gemini API key for AI features
+```bash
 echo "GEMINI_API_KEY=your-key-here" > .env
-
-#### Analyze legacy code
-npm run demo
 ```
+
+#### Analyze legacy code from the command line
+```bash
+npm run demo-ai
+```
+
+#### Or, run the web-based analysis tool
+```bash
+npm run start:web
+```
+Then open your browser to http://localhost:3000
+
 ## 💡 What Makes This Special
 
 ### Technical Excellence
@@ -37,7 +51,7 @@ npm run demo
 
 📊 **Official Data Integration**: Leverages 279 web features from Chrome's official web-features package
 
-🤖 **AI-Powered Suggestions**: Google Gemini 1.5 Flash provides context-aware migration recommendations
+🤖 **AI-Powered Suggestions**: Google Gemini 2.0 provides context-aware migration recommendations
 
 🏗️ **Production Architecture**: Smart rate limiting, comprehensive error handling, and graceful degradation
 
@@ -70,7 +84,7 @@ Fix: Replace with const/let (widely supported in Baseline)
 🔴 High priority: 3 (immediate attention needed)
 🟡 Medium priority: 18 (should be updated)
 🔵 Low priority: 6 (nice to have)
-```
+
 
 #### 🛠️ Installation
 
@@ -79,50 +93,65 @@ Fix: Replace with const/let (widely supported in Baseline)
 - npm or yarn
 
 ##### Setup
-```Global installation
+```bash
+# Global installation
 npm install -g baseline-migrator-pro
 
-or local installation
+# or local installation
 npm install baseline-migrator-pro
 ```
 
 ##### Optional: AI Features
-Get API key from https://ai.google.dev
+Get an API key from https://ai.google.dev
+```bash
 echo "GEMINI_API_KEY=your-actual-key" > .env
+```
 
 
 #### 🎯 Usage
 
 ##### Basic Analysis
 Analyze a single file
+```bash
 baseline-migrate analyze src/legacy-code.js
+```
 
 With AI suggestions
+```bash
 baseline-migrate analyze src/legacy-code.js --ai
+```
 
 Multiple files
+```bash
 baseline-migrate analyze src/**/*.js
+```
 
 
 ##### Available Commands
+```bash
 baseline-migrate --help # Show all options
 baseline-migrate analyze # Basic pattern detection
 baseline-migrate analyze --ai # AI-powered suggestions
 baseline-migrate demo # Run comprehensive demo
+```
 
 
 #### 🏗️ Architecture
-```src/
+```
+src/
 ├── index.js # Professional CLI with beautiful output
 ├── core/analyzer.js # AST-based pattern detection engine
 ├── baseline/manager.js # Web Features integration + migration patterns
-├── ai/engine.js # Google Gemini AI with smart rate limiting
-└── utils/security.js # Environment protection and validation
+├── ai/engine.js # Google Gemini AI (2.0) with smart rate limiting
+├── utils/security.js # Environment protection and validation
+└── web/ # Contains the web server and interface
+    ├── server.js # Express.js server for the web UI
+    └── index.html # The HTML for the web interface
 ```
 ### 🎯 Detected Patterns
 
 | Pattern | Priority | Modern Alternative | Security Impact |
-|---------|----------|-------------------|-----------------|
+|---|---|---|---|
 | XMLHttpRequest | 🔴 High | fetch API | Performance |
 | innerHTML | 🔴 High | textContent/createElement | XSS Vulnerability |
 | var declarations | 🟡 Medium | const/let | Scope Issues |
@@ -134,30 +163,36 @@ baseline-migrate demo # Run comprehensive demo
 ### 📈 Technical Specifications
 
 - **Language Analysis**: Babel AST parsing with comprehensive visitor pattern detection
-- **AI Integration**: Google Gemini 1.5 Flash with context-aware prompt engineering
+- **AI Integration**: Google Gemini 2.0 with context-aware prompt engineering
 - **Data Source**: Official Chrome web-features package (279 features)
 - **Rate Limiting**: Smart quota management for production environments
 - **Error Handling**: Graceful degradation with demo mode fallbacks
 - **Security**: Environment variable protection and API key validation
 
 ### 🎪 Demo Commands
-```npm run demo # Basic analysis (fast)
+```bash
+npm run demo # Basic analysis (fast)
 npm run demo-ai # AI-powered analysis (impressive)
 npm run demo-legacy # Legacy code patterns
 npm run demo-modern # Modern code validation
+npm run start:web # Start the web-based analysis tool
 
-Development
+# Development
 npm run dev # Development mode with nodemon
 npm run lint # Code quality checks
 npm run test # Test suite
 ```
 ### Google Gemini AI (optional)
+```
 GEMINI_API_KEY=your-key-here
+```
 
 ### Output preferences
+```
 OUTPUT_FORMAT=table
 SHOW_PROGRESS=true
 MAX_AI_SUGGESTIONS=10
+```
 
 
 ### 📋 Supported File Types
@@ -192,4 +227,3 @@ MIT License - see LICENSE file for details.
 ---
 
 **Baseline Migrator Pro** - Modernize your JavaScript codebase with confidence using official Chrome compatibility data and AI-powered migration suggestions.
-

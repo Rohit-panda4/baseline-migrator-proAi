@@ -1,0 +1,149 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baseline Migrator Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #131314;
+            color: #E3E3E3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 80%;
+            max-width: 900px;
+            background-color: #1E1F20;
+            padding: 40px;
+            border-radius: 10px;
+            border: 1px solid #5F6368;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        header img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 3em;
+            background: linear-gradient(90deg, #89B3F8, #B694F9, #F8C56B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+            margin: 0;
+        }
+        h2 {
+            color: #E3E3E3;
+            border-bottom: 1px solid #5F6368;
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+        textarea, #output {
+            width: 100%;
+            height: 300px;
+            border-radius: 5px;
+            padding: 15px;
+            font-size: 1em;
+            resize: vertical;
+            box-sizing: border-box;
+            background-color: #303134;
+            color: #E3E3E3;
+            border: 1px solid #5F6368;
+        }
+        textarea:focus, #output:focus {
+          border-color: #8AB4F8;
+          outline: none; /* Removes the default browser outline */
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+        }
+        #analyze-btn {
+            background-color: #3C4043;
+            color: #E3E3E3;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1em;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #analyze-btn:hover {
+            background-color: #5F6368;
+        }
+        #output {
+            min-height: 100px;
+            white-space: pre-wrap;
+        }
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #9AA0A6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="logo.png" alt="Logo">
+            <h1>Baseline Migrator Pro</h1>
+        </header>
+        <main>
+            <textarea id="code-input" placeholder="Paste your JavaScript code here..."></textarea>
+            <div class="controls">
+                <label>
+                    <input type="checkbox" id="ai-enabled">
+                    Enable AI Suggestions
+                </label>
+                <button id="analyze-btn">Analyze</button>
+            </div>
+            <h2>Analysis Output</h2>
+            <pre id="output"></pre>
+        </main>
+        <footer>
+            <p>&copy; 2025 Baseline Migrator Pro. All rights reserved.</p>
+        </footer>
+    </div>
+    <script>
+        document.getElementById('analyze-btn').addEventListener('click', async () => {
+            const code = document.getElementById('code-input').value;
+            const ai = document.getElementById('ai-enabled').checked;
+            const outputEl = document.getElementById('output');
+
+            outputEl.textContent = 'Analyzing...';
+
+            const response = await fetch('/analyze', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ code, ai }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                outputEl.textContent = result.output;
+            } else {
+                outputEl.textContent = `Error: ${result.error}`;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,3 +1,4 @@
+
 import { parse } from '@babel/parser';
 import traverseModule from '@babel/traverse';
 import { readFileSync } from 'fs';
@@ -9,14 +10,19 @@ import { AIEngine } from '../ai/engine.js';
 const traverse = traverseModule.default || traverseModule;
 
 export class BaselineAnalyzer {
-  constructor() {
+  constructor(options = {}) {
+    this.logger = options.logger || console;
+    // Disable chalk if a custom logger is provided (e.g., for web UI)
+    const chalkLevel = (options.logger && options.logger !== console) ? 0 : undefined;
+    this.chalk = new chalk.Instance({ level: chalkLevel });
+
     this.baselineManager = new BaselineManager();
-    this.aiEngine = new AIEngine();
+    this.aiEngine = new AIEngine({ logger: this.logger, chalk: this.chalk });
     this.issues = [];
   }
 
   async analyzeFile(filePath, options = {}) {
-    console.log(chalk.blue(`🔍 Analyzing ${filePath}...`));
+    this.logger.log(this.chalk.blue(`🔍 Analyzing ${filePath}...`));
   
     // Initialize Baseline data
     await this.baselineManager.initialize();
@@ -39,7 +45,7 @@ export class BaselineAnalyzer {
       // Reset issues
       this.issues = [];
   
-      console.log(chalk.gray('📊 Parsing AST and detecting patterns...'));
+      this.logger.log(this.chalk.gray('📊 Parsing AST and detecting patterns...'));
   
       // Traverse AST with comprehensive pattern detectors
       traverse(ast, {
@@ -171,7 +177,7 @@ export class BaselineAnalyzer {
       await this.displayResults(options);
   
     } catch (error) {
-      console.error(chalk.red(`❌ Error analyzing ${filePath}: ${error.message}`));
+      this.logger.error(this.chalk.red(`❌ Error analyzing ${filePath}: ${error.message}`));
     }
   }
 
@@ -193,7 +199,7 @@ export class BaselineAnalyzer {
   }
 
   async enrichWithBaseline() {
-    console.log(chalk.gray('🔍 Checking against Baseline data...'));
+    this.logger.log(this.chalk.gray('🔍 Checking against Baseline data...'));
     
     for (let issue of this.issues) {
       const baselineInfo = await this.baselineManager.checkPattern(issue.pattern);
@@ -208,58 +214,52 @@ export class BaselineAnalyzer {
   }
 
   async enrichWithAI(fullCode) {
-    console.log(chalk.gray('🤖 Getting Google Gemini AI insights...'));
-    console.log(chalk.dim(`   Analyzing ${this.issues.length} patterns with smart rate limiting...`));
+    this.logger.log(this.chalk.gray('🤖 Getting Google Gemini AI insights...'));
+    this.logger.log(this.chalk.dim(`   Analyzing ${this.issues.length} patterns with smart rate limiting...`));
     
-    // Limit AI suggestions to avoid quota issues (max 10 suggestions per analysis)
     const maxAISuggestions = Math.min(this.issues.length, 10);
     const issuesForAI = this.issues.slice(0, maxAISuggestions);
     
     if (this.issues.length > maxAISuggestions) {
-      console.log(chalk.dim(`   🔢 Processing top ${maxAISuggestions} issues to avoid rate limits`));
+      this.logger.log(this.chalk.dim(`   🔢 Processing top ${maxAISuggestions} issues to avoid rate limits`));
     }
     
     for (let [index, issue] of issuesForAI.entries()) {
-      // Get relevant code context (5 lines around the issue)
       const lines = fullCode.split('\n');
       const start = Math.max(0, issue.line - 3);
       const end = Math.min(lines.length, issue.line + 2);
       const context = lines.slice(start, end).join('\n');
       
-      console.log(chalk.dim(`   🔍 Processing ${index + 1}/${issuesForAI.length}: ${issue.pattern} (Line ${issue.line})`));
+      this.logger.log(this.chalk.dim(`   🔍 Processing ${index + 1}/${issuesForAI.length}: ${issue.pattern} (Line ${issue.line})`));
           
       const aiResponse = await this.aiEngine.generateSuggestion(issue, context);
       issue.aiSuggestion = aiResponse.suggestion;
       issue.aiConfidence = aiResponse.confidence;
           
-      // Show progress
       if (aiResponse.model !== 'demo-mode') {
-        console.log(chalk.dim(`   ✅ Generated AI suggestion for ${issue.pattern}`));
+        this.logger.log(this.chalk.dim(`   ✅ Generated AI suggestion for ${issue.pattern}`));
       } else {
-        console.log(chalk.dim(`   📝 Used demo suggestion for ${issue.pattern}`));
+        this.logger.log(this.chalk.dim(`   📝 Used demo suggestion for ${issue.pattern}`));
       }
     }
     
-    // Mark remaining issues as having no AI suggestion
     for (let i = maxAISuggestions; i < this.issues.length; i++) {
       this.issues[i].aiSuggestion = null;
       this.issues[i].aiConfidence = 0;
     }
     
-    // Show final stats
     const stats = this.aiEngine.getStats();
-    console.log(chalk.dim(`   📊 Completed: ${stats.requestCount} AI requests processed successfully`));
+    this.logger.log(this.chalk.dim(`   📊 Completed: ${stats.requestCount} AI requests processed successfully`));
   }
 
   async displayResults(options) {
     if (this.issues.length === 0) {
-      console.log(chalk.green('\n✅ No legacy patterns detected! Code is Baseline-ready.'));
+      this.logger.log(this.chalk.green('\n✅ No legacy patterns detected! Code is Baseline-ready.'));
       return;
     }
   
-    console.log(chalk.yellow(`\n⚠️  Found ${this.issues.length} legacy patterns:\n`));
+    this.logger.log(this.chalk.yellow(`\n⚠️  Found ${this.issues.length} legacy patterns:\n`));
   
-    // Sort issues by severity and line number
     const sortedIssues = this.issues.sort((a, b) => {
       const severityOrder = { 'high': 3, 'medium': 2, 'low': 1 };
       if (severityOrder[a.severity] !== severityOrder[b.severity]) {
@@ -268,81 +268,76 @@ export class BaselineAnalyzer {
       return a.line - b.line;
     });
 
-    // Display each issue with optional AI suggestions
     sortedIssues.forEach((issue, index) => {
       const severityColor = issue.severity === 'high' ? 'red' :
                             issue.severity === 'medium' ? 'yellow' : 'blue';
       const severityIcon = issue.severity === 'high' ? '🔴' :
                            issue.severity === 'medium' ? '🟡' : '🔵';
               
-      console.log(`${severityIcon} ${chalk.bold(`Line ${issue.line}`)} - ${chalk[severityColor](issue.severity.toUpperCase())} PRIORITY`);
-      console.log(`   ${chalk.red('Legacy:')} ${issue.pattern}`);
-      console.log(`   ${chalk.green('Modern:')} ${issue.modern || 'Modern alternative available'}`);
-      console.log(`   ${chalk.gray('Fix:')} ${issue.recommendation || 'Update to Baseline-compatible pattern'}`);
+      this.logger.log(`${severityIcon} ${this.chalk.bold(`Line ${issue.line}`)} - ${this.chalk[severityColor](issue.severity.toUpperCase())} PRIORITY`);
+      this.logger.log(`   ${this.chalk.red('Legacy:')} ${issue.pattern}`);
+      this.logger.log(`   ${this.chalk.green('Modern:')} ${issue.modern || 'Modern alternative available'}`);
+      this.logger.log(`   ${this.chalk.gray('Fix:')} ${issue.recommendation || 'Update to Baseline-compatible pattern'}`);
               
       if (issue.example) {
-        console.log(`   ${chalk.cyan('Example:')} ${issue.example}`);
+        this.logger.log(`   ${this.chalk.cyan('Example:')} ${issue.example}`);
       }
   
-      // Show AI suggestion if available
       if (issue.aiSuggestion && options.ai) {
-        console.log(chalk.bold.magenta('\n   🤖 Google Gemini AI Analysis:'));
+        this.logger.log(this.chalk.bold.magenta('\n   🤖 Google Gemini AI Analysis:'));
         const formattedSuggestion = issue.aiSuggestion
-          .replace(/\*\*(.*?)\*\*/g, chalk.bold.cyan('$1'))
-          .replace(/`(.*?)`/g, chalk.green('$1'));
+          .replace(/\*\*(.*?)\*\*/g, this.chalk.bold.cyan('$1'))
+          .replace(/`(.*?)`/g, this.chalk.green('$1'));
               
-        console.log(chalk.white('   ' + formattedSuggestion.replace(/\n/g, '\n   ')));
+        this.logger.log(this.chalk.white('   ' + formattedSuggestion.replace(/\n/g, '\n   ')));
               
         if (issue.aiConfidence > 0) {
-          console.log(chalk.dim(`   ✨ Confidence: ${Math.round(issue.aiConfidence * 100)}%`));
+          this.logger.log(this.chalk.dim(`   ✨ Confidence: ${Math.round(issue.aiConfidence * 100)}%`));
         }
       } else if (options.ai && !issue.aiSuggestion) {
-        console.log(chalk.dim('   💡 AI suggestion: Use modern Baseline-compatible patterns'));
+        this.logger.log(this.chalk.dim('   💡 AI suggestion: Use modern Baseline-compatible patterns'));
       }
               
       if (index < sortedIssues.length - 1) {
-        console.log(''); // Add spacing between issues
+        this.logger.log(''); // Add spacing between issues
       }
     });
   
-    // Professional summary
-    console.log(chalk.bold('\n📊 Migration Summary:'));
+    this.logger.log(this.chalk.bold('\n📊 Migration Summary:'));
     const highIssues = this.issues.filter(i => i.severity === 'high').length;
     const mediumIssues = this.issues.filter(i => i.severity === 'medium').length;
     const lowIssues = this.issues.filter(i => i.severity === 'low').length;
     
-    console.log(`   🔴 High priority: ${chalk.red.bold(highIssues)} (immediate attention needed)`);
-    console.log(`   🟡 Medium priority: ${chalk.yellow.bold(mediumIssues)} (should be updated)`);
-    console.log(`   🔵 Low priority: ${chalk.blue.bold(lowIssues)} (nice to have)`);
+    this.logger.log(`   🔴 High priority: ${this.chalk.red.bold(highIssues)} (immediate attention needed)`);
+    this.logger.log(`   🟡 Medium priority: ${this.chalk.yellow.bold(mediumIssues)} (should be updated)`);
+    this.logger.log(`   🔵 Low priority: ${this.chalk.blue.bold(lowIssues)} (nice to have)`);
   
-    // Baseline status
-    console.log(chalk.bold('\n🎯 Baseline Compatibility:'));
+    this.logger.log(this.chalk.bold('\n🎯 Baseline Compatibility:'));
     const baselineReady = this.issues.length === 0;
     if (baselineReady) {
-      console.log(`   ✅ ${chalk.green('Ready for production - all patterns are Baseline compatible!')}`);
+      this.logger.log(`   ✅ ${this.chalk.green('Ready for production - all patterns are Baseline compatible!')}`);
     } else {
-      console.log(`   ⚠️  ${chalk.yellow(`${this.issues.length} patterns need modernization for full Baseline compatibility`)}`);
+      this.logger.log(`   ⚠️  ${this.chalk.yellow(`${this.issues.length} patterns need modernization for full Baseline compatibility`)}`);
       
-      // Show migration priority
       const criticalCount = highIssues + mediumIssues;
       if (criticalCount > 0) {
-        console.log(`   🚨 ${chalk.yellow(`Focus on ${criticalCount} high/medium priority issues first`)}`);
+        this.logger.log(`   🚨 ${this.chalk.yellow(`Focus on ${criticalCount} high/medium priority issues first`)}`);
       }
     }
       
     if (!options.ai && this.issues.length > 0) {
-      console.log(chalk.bold.cyan('\n🚀 Run with --ai flag for intelligent migration suggestions!'));
+      this.logger.log(this.chalk.bold.cyan('\n🚀 Run with --ai flag for intelligent migration suggestions!'));
     } else if (options.ai) {
       const aiSuggestions = this.issues.filter(i => i.aiSuggestion).length;
-      console.log(chalk.bold.green(`\n✨ Generated ${aiSuggestions} AI-powered migration suggestions!`));
+      this.logger.log(this.chalk.bold.green(`\n✨ Generated ${aiSuggestions} AI-powered migration suggestions!`));
     }
   }
 
   async scanDirectory(directory, options = {}) {
-    console.log(chalk.blue(`📁 Scanning directory ${directory}...`));
-    console.log(chalk.yellow('⚠️  Directory scanning coming in next version!'));
-    console.log(chalk.dim('   Will recursively analyze all .js, .ts, .jsx, .tsx files'));
-    console.log(chalk.dim('   Generate comprehensive migration report'));
-    console.log(chalk.dim('   Export results to HTML/JSON formats'));
+    this.logger.log(this.chalk.blue(`📁 Scanning directory ${directory}...`));
+    this.logger.log(this.chalk.yellow('⚠️  Directory scanning coming in next version!'));
+    this.logger.log(this.chalk.dim('   Will recursively analyze all .js, .ts, .jsx, .tsx files'));
+    this.logger.log(this.chalk.dim('   Generate comprehensive migration report'));
+    this.logger.log(this.chalk.dim('   Export results to HTML/JSON formats'));
   }
 }
