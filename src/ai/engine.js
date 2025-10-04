@@ -294,11 +294,6 @@ Check MDN documentation for current best practices.`,
         aiConfidence: aiResponse.confidence,
         aiProvider: 'Google Gemini'
       });
-      
-      // Extra delay for batch operations
-      if (index < issues.length - 1) {
-        await new Promise(resolve => setTimeout(resolve, 3000));
-      }
     }
     
     return enhancedIssues;
