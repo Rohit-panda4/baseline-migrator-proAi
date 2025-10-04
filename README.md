@@ -10,9 +10,17 @@ Modernize your JavaScript codebase with confidence using official Chrome compati
 
 ---
 
+## 🌟 Project Status
+
+**✅ Active & Maintained (June 2024)**
+
+The AI engine has been successfully migrated to the latest Google Gemini SDK (`@google/genai`) and now uses the `gemini-2.5-flash` model for faster and more accurate suggestions. All systems are fully operational.
+
+---
+
 ## ✨ Key Features
 
--   **🤖 AI-Powered Migrations**: Leverages Google Gemini for intelligent, context-aware code migration suggestions.
+-   **🤖 AI-Powered Migrations**: Leverages the official `@google/genai` SDK with the powerful `gemini-2.5-flash` model for intelligent, context-aware code migration suggestions.
 -   **🔍 AST-Based Pattern Detection**: Uses Abstract Syntax Tree (AST) analysis to detect **over 15 common legacy JavaScript patterns.**
 -   **📊 Baseline Compatibility Data**: Cross-references findings with a database of **over 279 web features** to check for modern browser compatibility (the "Baseline").
 -   **💻 Interactive Web Interface**: A user-friendly web UI for analyzing code directly in your browser.
@@ -123,6 +131,6 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 
 ## 🙏 Acknowledgments
 
--   [web-features](https://github.com/web-platform-dx/web-features) for the official browser compatibility data.
--   [Google Gemini](https://ai.google.dev) for powering the intelligent migration suggestions.
--   [Babel](https://babeljs.io) for the powerful JavaScript parsing and AST manipulation.
+-   **[web-features](https://github.com/web-platform-dx/web-features)** for the official browser compatibility data.
+-   **[Google Gemini](https://ai.google.dev)** for providing the state-of-the-art `gemini-2.5-flash` model.
+-   **[Babel](https://babeljs.io)** for the powerful JavaScript parsing and AST manipulation.

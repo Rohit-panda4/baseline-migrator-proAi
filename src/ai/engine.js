@@ -25,11 +25,11 @@ export class AIEngine {
     
     try {
       this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-      this.model = this.genAI.getGenerativeModel({ model: 'gemini-pro' });
+      this.model = this.genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
       this.initialized = true;
       
       this.logger.log(this.chalk.green('🤖 Google Gemini AI initialized successfully!'));
-      this.logger.log(this.chalk.gray('   Using Gemini Pro for intelligent migration suggestions'));
+      this.logger.log(this.chalk.gray('   Using Gemini 2.5 Flash for intelligent migration suggestions'));
       return true;
     } catch (error) {
       this.logger.log(this.chalk.red('❌ Failed to initialize Gemini AI:', error.message));
@@ -96,7 +96,7 @@ Keep response focused and under 150 words.`;
       return {
         suggestion: suggestion,
         confidence: 0.9,
-        model: 'gemini-pro'
+        model: 'gemini-2.5-flash'
       };
 
     } catch (error) {
@@ -323,7 +323,7 @@ Check MDN documentation for current best practices.`,
     });
     
     if (confidence > 0) {
-      formatted += this.chalk.dim(`\n✨ Google Gemini Confidence: ${Math.round(confidence * 100)}% | Model: gemini-pro`);
+      formatted += this.chalk.dim(`\n✨ Google Gemini Confidence: ${Math.round(confidence * 100)}% | Model: gemini-2.5-flash`);
     }
     
     return formatted;
@@ -333,7 +333,7 @@ Check MDN documentation for current best practices.`,
     return {
       requestCount: this.requestCount,
       initialized: this.initialized,
-      model: 'gemini-pro'
+      model: 'gemini-2.5-flash'
     };
   }
 }
