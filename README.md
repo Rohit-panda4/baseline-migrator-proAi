@@ -45,17 +45,20 @@ Modernize your JavaScript codebase with confidence using official Chrome compati
 
 ## ⚙️ Configuration
 
-### Google Gemini AI API Key
-
-To enable the AI-powered features of this tool, you must provide a Google Gemini API key.
+This project requires a Google Gemini API key to power its AI features.
 
 1.  **Get your API key** from [Google AI Studio](https://ai.google.dev).
 
-2.  **Create a `.env` file** in the root of the project with your key:
+2.  **Copy the `.env.example` file** to a new `.env` file:
     ```bash
-    echo "GEMINI_API_KEY=your-api-key-here" > .env
+    cp .env.example .env
     ```
-    Replace `your-api-key-here` with your actual Google Gemini API key.
+
+3.  **Open the `.env` file** and add your Gemini API key:
+    ```
+    GEMINI_API_KEY="<your-api-key-here>"
+    ```
+    Replace `<your-api-key-here>` with your actual key.
 
 ---
 
