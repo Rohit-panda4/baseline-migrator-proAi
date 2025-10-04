@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🚀 Baseline Migrator Pro
 ## AI-Powered Web Feature Migration Tool for Baseline Compatibility
 
@@ -227,3 +228,7 @@ MIT License - see LICENSE file for details.
 ---
 
 **Baseline Migrator Pro** - Modernize your JavaScript codebase with confidence using official Chrome compatibility data and AI-powered migration suggestions.
+=======
+# baseline-migrator-proAi
+AI-Powered Feature Migration Assistant for Baseline Tooling for Hackathon
+>>>>>>> 5bbf45c6fcbe49edd8fe32add4da7455b6687064
