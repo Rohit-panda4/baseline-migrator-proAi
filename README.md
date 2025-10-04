@@ -33,7 +33,6 @@ Modernize your JavaScript codebase with confidence using official Chrome compati
 1.  **Clone the repository:**
     ```bash
     git clone https://github.com/Rohit-panda4/baseline-migrator-proAi.git
-    cd baseline-migrator-proAi
     ```
 
 2.  **Install dependencies:**
